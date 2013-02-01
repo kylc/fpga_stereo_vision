@@ -1,5 +1,3 @@
-#include <ap_cint.h>
-
 #include "stereobm_config.h"
 #include "stereobm_correspondence.h"
 #include "stereobm_image.h"
