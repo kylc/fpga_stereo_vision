@@ -3,6 +3,6 @@
 
 #include "stereobm_image.h"
 
-struct depth_image_t stereobm_correspondence(struct rgb_image_t *left_image, struct rgb_image_t *right_image);
+struct depth_image_t stereobm_correspondence(struct g_image_t *left_image, struct g_image_t *right_image);
 
 #endif

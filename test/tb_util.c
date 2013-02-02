@@ -32,7 +32,7 @@ void save_grayscale_ppm(char *file_name, struct g_image_t *image) {
 	// Copy data back into PPM structure
 	for(int x = 0; x < IMG_WIDTH; x++) {
 		for(int y = 0; y < IMG_HEIGHT; y++) {
-                        struct g8_t pixel = image->pixels[x][y];
+			struct g8_t pixel = image->pixels[x][y];
 
 			// PPM data is indexed by y, then x
 			PPM_ASSIGN(data[y][x], pixel.g, pixel.g, pixel.g);
@@ -49,7 +49,7 @@ void save_depth_ppm(char *file_name, struct depth_image_t *image) {
 	// Copy data back into PPM structure
 	for(int x = 0; x < IMG_WIDTH; x++) {
 		for(int y = 0; y < IMG_HEIGHT; y++) {
-                        struct depth8_t p = image->pixels[x][y];
+			struct depth8_t p = image->pixels[x][y];
 
 			// PPM data is indexed by y, then x
 			PPM_ASSIGN(data[y][x], p.d, p.d, p.d);
