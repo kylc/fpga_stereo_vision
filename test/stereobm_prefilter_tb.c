@@ -25,14 +25,15 @@ int main(int argc, char **argv) {
 	}
 
 	// Apply the prefilter
-	stereobm_prefilter(&image);
+	struct g_image_t prefiltered = stereobm_prefilter(&image);
 
 	// Copy data back into PPM structure
 	for(int x = 0; x < IMG_WIDTH; x++) {
 		for(int y = 0; y < IMG_HEIGHT; y++) {
+                        struct g8_t g = prefiltered.pixels[x][y];
+
 			// PPM data is indexed by y, then x
-			struct rgb8_t rgb = image.pixels[x][y];
-			PPM_ASSIGN(data[y][x], rgb.r, rgb.g, rgb.b);
+			PPM_ASSIGN(data[y][x], g.g, g.g, g.g);
 		}
 	}
 
