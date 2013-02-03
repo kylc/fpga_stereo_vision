@@ -10,6 +10,7 @@
 
 /* Bit depth of the sobel filter */
 #define SOBEL_DEPTH 4
+#define SOBEL_CLAMP ((2 << SOBEL_DEPTH) - 1)
 
 /* Start and stop indices for block matching */
 #define MIN_DISPARITY 0

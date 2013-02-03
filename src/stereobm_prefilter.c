@@ -4,9 +4,6 @@
 #include "stereobm_image.h"
 #include "stereobm_prefilter.h"
 
-// TODO: warning: initializer element is not a constant expression
-const int sobel_clamp = pow(2, SOBEL_DEPTH) - 1;
-
 struct g_image_t stereobm_prefilter(struct rgb_image_t *image) {
 	struct g_image_t grayscale = stereobm_convert_to_grayscale(image);
 
@@ -43,14 +40,14 @@ struct g_image_t stereobm_sobel(struct g_image_t *image) {
 			int d1 = image->pixels[x + 1][y].g - image->pixels[x - 1][y].g;
 			int d2 = image->pixels[x + 1][y + 1].g - image->pixels[x - 1][y + 1].g;
 
-			// TODO: Why are we adding 'sobel_clamp / 2'?
-			int value = d0 + (2 * d1) + d2 + (sobel_clamp / 2);
+			// TODO: Why are we adding 'SOBEL_CLAMP / 2'?
+			int value = d0 + (2 * d1) + d2 + (SOBEL_CLAMP / 2);
 
 			// Clamp the value to the new range 0..2**SOBEL_DEPTH-1.
 			if(value < 0) {
 				value = 0;
-			} else if(value > sobel_clamp) {
-				value = sobel_clamp;
+			} else if(value > SOBEL_CLAMP) {
+				value = SOBEL_CLAMP;
 			}
 
 			// Normalize to full 8 bit grayscale range
