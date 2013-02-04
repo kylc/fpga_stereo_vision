@@ -10,7 +10,8 @@ struct depth_image_t stereobm_correspondence(struct g_image_t *left_image, struc
 	struct depth_image_t depth_map;
 
 	// Initialize the map to all black (unknown) pixels.
-	memset(depth_map.pixels, 0, sizeof(depth_map.pixels));
+	// TODO: HLS does not support memset.
+	// memset(depth_map.pixels, 0, sizeof(depth_map.pixels));
 
 	// Scan across the whole image, pixel by pixel.  Our goal is to find a
 	// 'd' (disparity) value for every pixel in the image.  This is the
