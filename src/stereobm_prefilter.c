@@ -40,7 +40,6 @@ struct g_image_t stereobm_sobel(struct g_image_t *image) {
 			int d1 = image->pixels[x + 1][y].g - image->pixels[x - 1][y].g;
 			int d2 = image->pixels[x + 1][y + 1].g - image->pixels[x - 1][y + 1].g;
 
-			// TODO: Why are we adding 'SOBEL_CLAMP / 2'?
 			int value = d0 + (2 * d1) + d2 + (SOBEL_CLAMP / 2);
 
 			// Clamp the value to the new range 0..2**SOBEL_DEPTH-1.
@@ -49,9 +48,6 @@ struct g_image_t stereobm_sobel(struct g_image_t *image) {
 			} else if(value > SOBEL_CLAMP) {
 				value = SOBEL_CLAMP;
 			}
-
-			// Normalize to full 8 bit grayscale range
-			value = (255.0 / 15.0) * value;
 
 			sobel.pixels[x][y].g = value;
 		}
