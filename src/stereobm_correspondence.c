@@ -47,12 +47,12 @@ struct depth_image_t stereobm_correspondence(struct g_image_t *left_image, struc
 int stereobm_sad_score(struct g_image_t *left_image, struct g_image_t *right_image, int x, int y, int d) {
 	int score = 0;
 
-	for(int dx = x - SAD_WINDOW_SIZE2 - 1; dx < x + SAD_WINDOW_SIZE2; dx++) {
-		for(int dy = y - SAD_WINDOW_SIZE2 - 1; dy < y + SAD_WINDOW_SIZE2; dy++) {
+	for(int dx = -SAD_WINDOW_SIZE2; dx < SAD_WINDOW_SIZE2; dx++) {
+		for(int dy = -SAD_WINDOW_SIZE2; dy < SAD_WINDOW_SIZE2; dy++) {
 			// Compute the disparity of a
 			// single pixel
-			int disparity = abs(left_image->pixels[dx][dy].g
-					- right_image->pixels[dx - d][dy].g);
+			int disparity = abs(left_image->pixels[x + dx][y + dy].g
+					- right_image->pixels[x + dx - d][y + dy].g);
 
 			// Add this to the total SAD
 			score += disparity;
