@@ -15,8 +15,6 @@ struct depth_image_t stereobm_correspondence(struct g_image_t *left_image, struc
 	// 'd' (disparity) value for every pixel in the image.  This is the
 	// distance between the pixel in the left image and that same image in
 	// the right.
-	// TODO: Should 'x' start at SAD_WINDOW_SIZE, as we're accessing
-	// 'pixels[x - d][y]'?
 	for(int x = MAX_DISPARITY; x < IMG_WIDTH; x++) {
 		for(int y = 0; y < IMG_HEIGHT; y++) {
 			// The 'min_score' is the best 'd' value for this pixel.
