@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include <limits.h>
 
 #include "stereobm_config.h"
@@ -7,6 +8,8 @@
 
 struct depth_image_t stereobm_correspondence(struct g_image_t *left_image, struct g_image_t *right_image) {
 	struct depth_image_t depth_map;
+
+	memset(depth_map.pixels, 0, sizeof(depth_map.pixels));
 
 	// Scan across the whole image, pixel by pixel.  Our goal is to find a
 	// 'd' (disparity) value for every pixel in the image.  This is the
@@ -21,19 +24,7 @@ struct depth_image_t stereobm_correspondence(struct g_image_t *left_image, struc
 			// that score.
 			int min_score = INT_MAX, min_disparity = 0;
 			for(int d = MIN_DISPARITY; d < MAX_DISPARITY; d++) {
-				int score = 0;
-
-				for(int dx = x - SAD_WINDOW_SIZE2 - 1; dx < x + SAD_WINDOW_SIZE2; dx++) {
-					for(int dy = y - SAD_WINDOW_SIZE2 - 1; dy < y + SAD_WINDOW_SIZE2; dy++) {
-						// Compute the disparity of a
-						// single pixel
-						int disparity = abs(left_image->pixels[dx][dy].g
-									- right_image->pixels[dx - d][dy].g);
-
-						// Add this to the total SAD
-						score += disparity;
-					}
-				}
+				int score = stereobm_sad_score(left_image, right_image, x, y, d);
 
 				// If this 'd' value is better than the current
 				// best, record it.
@@ -51,4 +42,22 @@ struct depth_image_t stereobm_correspondence(struct g_image_t *left_image, struc
 	}
 
 	return depth_map;
+}
+
+int stereobm_sad_score(struct g_image_t *left_image, struct g_image_t *right_image, int x, int y, int d) {
+	int score = 0;
+
+	for(int dx = x - SAD_WINDOW_SIZE2 - 1; dx < x + SAD_WINDOW_SIZE2; dx++) {
+		for(int dy = y - SAD_WINDOW_SIZE2 - 1; dy < y + SAD_WINDOW_SIZE2; dy++) {
+			// Compute the disparity of a
+			// single pixel
+			int disparity = abs(left_image->pixels[dx][dy].g
+					- right_image->pixels[dx - d][dy].g);
+
+			// Add this to the total SAD
+			score += disparity;
+		}
+	}
+
+	return score;
 }
