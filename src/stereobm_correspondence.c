@@ -23,7 +23,7 @@ struct depth_image_t stereobm_correspondence(struct g_image_t *left_image, struc
 			// The 'min_score' is the best 'd' value for this pixel.
 			// 'min_disparity' is the disparity that corresponds to
 			// that score.
-			int min_score = INT_MAX;
+			unsigned int min_score = INT_MAX;
 			for(int d = MIN_DISPARITY; d < MAX_DISPARITY; d++) {
 				int score = stereobm_sad_score(left_image, right_image, x, y, d);
 
@@ -43,7 +43,7 @@ struct depth_image_t stereobm_correspondence(struct g_image_t *left_image, struc
 }
 
 int stereobm_sad_score(struct g_image_t *left_image, struct g_image_t *right_image, int x, int y, int d) {
-	int score = 0;
+	unsigned int score = 0;
 
 	for(int dx = -SAD_WINDOW_SIZE2; dx < SAD_WINDOW_SIZE2; dx++) {
 		for(int dy = -SAD_WINDOW_SIZE2; dy < SAD_WINDOW_SIZE2; dy++) {
