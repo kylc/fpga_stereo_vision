@@ -6,7 +6,7 @@
 #define IMG_HEIGHT 375
 
 /* Size of disparity window, e.g. 5x5 */
-#define SAD_WINDOW_SIZE 17
+#define SAD_WINDOW_SIZE 18
 #define SAD_WINDOW_SIZE2 (SAD_WINDOW_SIZE / 2)
 
 /* Bit depth of the sobel filter */
