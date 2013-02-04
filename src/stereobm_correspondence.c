@@ -9,12 +9,15 @@
 struct depth_image_t stereobm_correspondence(struct g_image_t *left_image, struct g_image_t *right_image) {
 	struct depth_image_t depth_map;
 
+	// Initialize the map to all black (unknown) pixels.
 	memset(depth_map.pixels, 0, sizeof(depth_map.pixels));
 
 	// Scan across the whole image, pixel by pixel.  Our goal is to find a
 	// 'd' (disparity) value for every pixel in the image.  This is the
 	// distance between the pixel in the left image and that same image in
-	// the right.
+	// the right.  Note that we start our scan at 'MAX_DISPARITY' as we
+	// won't be able to shift left 'MAX_DISPARITY' pixels for our disparity
+	// loop otherwise.
 	for(int x = MAX_DISPARITY; x < IMG_WIDTH; x++) {
 		for(int y = 0; y < IMG_HEIGHT; y++) {
 			// The 'min_score' is the best 'd' value for this pixel.
