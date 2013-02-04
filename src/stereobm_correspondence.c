@@ -50,8 +50,7 @@ int stereobm_sad_score(struct g_image_t *left_image, struct g_image_t *right_ima
 
 	for(int dx = -SAD_WINDOW_SIZE2; dx < SAD_WINDOW_SIZE2; dx++) {
 		for(int dy = -SAD_WINDOW_SIZE2; dy < SAD_WINDOW_SIZE2; dy++) {
-			// Compute the disparity of a
-			// single pixel
+			// Compute the disparity of a single pixel
 			int disparity = abs(left_image->pixels[x + dx][y + dy].g
 					- right_image->pixels[x + dx - d][y + dy].g);
 
