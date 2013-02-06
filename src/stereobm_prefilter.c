@@ -41,23 +41,17 @@ void stereobm_sobel(struct g_image_t *image, struct g_image_t *output) {
 	for(int x = 1; x < IMG_WIDTH - 1; x++) {
 		for(int y = 1; y < IMG_HEIGHT - 1; y++) {
 #pragma HLS PIPELINE
-
-			// P = (x, y)
-			// Shift out the left 3rd of the window
+			// Shift each row up
 			for(int i = 0; i < 3; i++) {
 #pragma HLS UNROLL
-				buf[0][i] = buf[1][i];
-				buf[1][i] = buf[2][i];
+				buf[i][0] = buf[i][1];
+				buf[i][1] = buf[i][2];
 			}
 
-			// Shift in new right third
-			for(int i = 0; i < 3; i++) {
-#pragma HLS UNROLL
-				// TODO: This buffer shift required 3 memory reads, but RAM
-				// only has two ports.  This make the pipeline II=2, doubling
-				// the execution cycles.
-				buf[2][i] = image->pixels[x + 1][y + i - 1].g;
-			}
+			// Shift in new bottom row.  We don't need the center
+			// row.
+			buf[0][2] = image->pixels[x - 1][y].g;
+			buf[2][2] = image->pixels[x + 1][y].g;
 
 			// Compute the matrix product.
 			int d0 = buf[2][0] - buf[0][0];

@@ -3,7 +3,7 @@
 #include "stereobm_image.h"
 
 struct rgb_image_t load_rgb_ppm(char *file_name);
-void save_grayscale_ppm(char *file_name, struct g_image_t *image);
+void save_grayscale_ppm(char *file_name, struct g_image_t *image, int max);
 void save_depth_ppm(char *file_name, struct depth_image_t *image);
 
 struct rgb_image_t load_rgb_ppm(char *file_name) {
@@ -26,7 +26,7 @@ struct rgb_image_t load_rgb_ppm(char *file_name) {
 	return image;
 }
 
-void save_grayscale_ppm(char *file_name, struct g_image_t *image) {
+void save_grayscale_ppm(char *file_name, struct g_image_t *image, int max) {
 	pixel **data = ppm_allocarray(IMG_WIDTH, IMG_HEIGHT);
 
 	// Copy data back into PPM structure
@@ -40,7 +40,7 @@ void save_grayscale_ppm(char *file_name, struct g_image_t *image) {
 	}
 
 	FILE *outfp = fopen(file_name, "w");
-	ppm_writeppm(outfp, data, IMG_WIDTH, IMG_HEIGHT, PPM_MAXMAXVAL, 0);
+	ppm_writeppm(outfp, data, IMG_WIDTH, IMG_HEIGHT, max, 0);
 }
 
 void save_depth_ppm(char *file_name, struct depth_image_t *image) {

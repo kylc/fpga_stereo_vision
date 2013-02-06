@@ -10,7 +10,7 @@ int main(int argc, char **argv) {
 	struct g_image_t prefiltered = stereobm_prefilter(&image);
 
 	// Copy data back into PPM structure
-	save_grayscale_ppm("test_images/im2_out.ppm", &prefiltered);
+	save_grayscale_ppm("test_images/im2_out.ppm", &prefiltered, SOBEL_CLAMP);
 
 	return EXIT_SUCCESS;
 }
