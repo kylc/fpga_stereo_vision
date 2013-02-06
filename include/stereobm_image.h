@@ -1,20 +1,22 @@
 #ifndef _STEREOBM_IMAGE_H_
 #define _STEREOBM_IMAGE_H_
 
+#include <stdint.h>
+
 #include "stereobm_config.h"
 
 struct rgb8_t {
-	unsigned char r;
-	unsigned char g;
-	unsigned char b;
+	uint8_t r;
+	uint8_t g;
+	uint8_t b;
 };
 
 struct g8_t {
-	unsigned char g;
+	uint8_t g;
 };
 
 struct depth8_t {
-	unsigned char d;
+	uint8_t d;
 };
 
 struct rgb_image_t {
