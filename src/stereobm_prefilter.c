@@ -6,10 +6,12 @@
 
 struct g_image_t stereobm_prefilter(struct rgb_image_t *image) {
 	struct g_image_t grayscale = stereobm_convert_to_grayscale(image);
+	struct g_image_t sobel;
 
 	// grayscale = stereobm_sobel(&grayscale);
+	stereobm_sobel(&grayscale, &sobel);
 
-	return grayscale;
+	return sobel;
 }
 
 /* Convert an RGB image to grayscale using the RGB average */
