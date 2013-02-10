@@ -11,7 +11,7 @@ int main(int argc, char **argv) {
 	struct depth_image_t depth = stereobm_core(&left_image, &right_image);
 
 	// Copy data back into PPM structure
-	save_depth_ppm("test_images/im26_out.ppm", &depth);
+	save_depth_ppm("test_images/im26_out.ppm", &depth, DISPARITY_CLAMP);
 
 	return EXIT_SUCCESS;
 }
