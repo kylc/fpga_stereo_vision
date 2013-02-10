@@ -13,6 +13,10 @@
 #define SOBEL_DEPTH 4
 #define SOBEL_CLAMP ((1 << SOBEL_DEPTH) - 1)
 
+/* Bit depth of the depth map */
+#define DISPARITY_DEPTH 7
+#define DISPARITY_CLAMP ((1 << DISPARITY_DEPTH) - 1)
+
 /* Start and stop indices for block matching */
 #define MIN_DISPARITY 0
 #define MAX_DISPARITY 64
