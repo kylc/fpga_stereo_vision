@@ -25,6 +25,8 @@ struct depth_image_t stereobm_correspondence(struct g_image_t *left_image, struc
 	
 	int32_t min_scores[IMG_WIDTH][IMG_HEIGHT];
 
+	int32_t prev_score = 0;
+
 	for(uint16_t x = 0; x < IMG_WIDTH; x++) {
 		for(uint16_t y = 0; y < IMG_HEIGHT; y++) {
 			min_scores[x][y] = INT32_MAX;
@@ -36,7 +38,7 @@ struct depth_image_t stereobm_correspondence(struct g_image_t *left_image, struc
 			for(uint16_t x = MAX_DISPARITY; x < IMG_WIDTH; x++) {
 				int32_t score = x == MAX_DISPARITY ?
 					stereobm_sad_score(left_image, right_image, x, y, d, score_buffer)
-					: stereobm_progressive_sad_score(left_image, right_image, x, y, d, score_buffer);
+					: stereobm_progressive_sad_score(left_image, right_image, x, y, d, score_buffer, prev_score);
 
 				// If this 'd' value is better than the current
 				// best, record it.
@@ -46,6 +48,8 @@ struct depth_image_t stereobm_correspondence(struct g_image_t *left_image, struc
 					// Save the result to the output.
 					depth_map.pixels[x][y].d = d;
 				}
+
+				prev_score = score;
 			}
 		}
 	}
@@ -75,7 +79,9 @@ int32_t stereobm_sad_score(struct g_image_t *left_image, struct g_image_t *right
 	return score;
 }
 
-int32_t stereobm_progressive_sad_score(struct g_image_t *left_image, struct g_image_t *right_image, uint16_t x, uint16_t y, uint8_t d, int32_t score_buffer[SAD_WINDOW_SIZE]) {
+int32_t stereobm_progressive_sad_score(struct g_image_t *left_image, struct g_image_t *right_image, uint16_t x, uint16_t y, uint8_t d, int32_t score_buffer[SAD_WINDOW_SIZE], int32_t prev_score) {
+	int32_t last_row_score = score_buffer[0];
+
 	for(int i = 0; i < SAD_WINDOW_SIZE - 1; i++) {
 		score_buffer[i] = score_buffer[i + 1];
 	}
@@ -88,10 +94,5 @@ int32_t stereobm_progressive_sad_score(struct g_image_t *left_image, struct g_im
 		score_buffer[SAD_WINDOW_SIZE - 1] += disparity;
 	}
 
-	int32_t score = 0;
-	for(int i = 0; i < SAD_WINDOW_SIZE; i++) {
-		score += score_buffer[i];
-	}
-
-	return score;
+	return score_buffer[SAD_WINDOW_SIZE - 1] + prev_score - last_row_score;
 }
