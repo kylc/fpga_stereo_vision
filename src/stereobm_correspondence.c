@@ -100,6 +100,7 @@ int32_t stereobm_progressive_sad_score(struct g_image_t *left_image, struct g_im
 	// Shift the buffer to the left, making room for a new column on the
 	// right.
 	for(int i = 0; i < SAD_WINDOW_SIZE - 1; i++) {
+#pragma HLS UNROLL
 		score_buffer[i] = score_buffer[i + 1];
 	}
 
