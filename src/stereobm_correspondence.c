@@ -49,7 +49,7 @@ struct depth_image_t stereobm_correspondence(struct g_image_t *left_image, struc
 				//	: stereobm_progressive_sad_score(left_image, right_image, x, y, d, score_buffer, prev_score);
 
 				// TODO: For now, forget about filling the
-				// initial buffer.  This messes with the lefter
+				// initial buffer.  This messes with the left
 				// 'SAD_WINDOW_SIZE' columns, but makes
 				// optimization much easier.
 				int32_t score = stereobm_progressive_sad_score(left_image, right_image, x, y, d, score_buffer, prev_score);
