@@ -71,6 +71,10 @@ struct depth_image_t stereobm_correspondence(struct g_image_t *left_image, struc
 	return depth_map;
 }
 
+/* Computes the sum of the absolute differences of each pixel in the right image
+ * and its corresponding pixel in the left image.  The 'score_buffer' is also
+ * filled with the scores of each column, as they are computed.
+ */
 int32_t stereobm_sad_score(struct g_image_t *left_image, struct g_image_t *right_image, uint16_t x, uint16_t y, uint8_t d, int32_t score_buffer[SAD_WINDOW_SIZE]) {
 	int32_t score = 0;
 
@@ -93,6 +97,11 @@ int32_t stereobm_sad_score(struct g_image_t *left_image, struct g_image_t *right
 	return score;
 }
 
+/* Compute the sub of absolute differences progressively.  Rather than
+ * recomputing the entire SAD window, intelligently score the window based on
+ * previous scores and the next column.  Given a filled 'score_buffer', this
+ * will produce bit-perfect output when compared to 'stereobm_sad_score'.
+ */
 int32_t stereobm_progressive_sad_score(struct g_image_t *left_image, struct g_image_t *right_image, uint16_t x, uint16_t y, uint8_t d, int32_t score_buffer[SAD_WINDOW_SIZE], int32_t prev_score) {
 	// The score of the row we are shifting out of the buffer.
 	int32_t last_row_score = score_buffer[0];

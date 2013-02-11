@@ -5,6 +5,9 @@
 #include "stereobm_image.h"
 #include "stereobm_prefilter.h"
 
+/* Accepts a rectified RGB image, converts it to grayscale and applies a Sobel
+ * convolution.
+ */
 struct g_image_t stereobm_prefilter(struct rgb_image_t *image) {
 	struct g_image_t grayscale = stereobm_convert_to_grayscale(image);
 	struct g_image_t sobel;
@@ -15,7 +18,7 @@ struct g_image_t stereobm_prefilter(struct rgb_image_t *image) {
 	return sobel;
 }
 
-/* Convert an RGB image to grayscale using the RGB average */
+/* Convert an RGB image to grayscale using the RGB average. */
 struct g_image_t stereobm_convert_to_grayscale(struct rgb_image_t *image) {
 	struct g_image_t grayscale;
 
@@ -34,8 +37,8 @@ struct g_image_t stereobm_convert_to_grayscale(struct rgb_image_t *image) {
 
 /* Applies a Sobel filter to the image */
 void stereobm_sobel(struct g_image_t *image, struct g_image_t *output) {
-	// We will create a 3x3 window centered at P = (x, y) and shift it to the
-	// left at each iteration.
+	// We will create a 3x3 window centered at P = (x, y) and shift down
+	// each iteration.
 	uint8_t buf[2][3];
 #pragma HLS ARRAY_PARTITION variable=buf complete dim=0
 
@@ -50,12 +53,12 @@ void stereobm_sobel(struct g_image_t *image, struct g_image_t *output) {
 			}
 
 			// Shift in new bottom row.  We don't need the center
-			// row.  Omitting it allows us to fit our reads into a
-			// 2P RAM every cycle.
+			// column.  Omitting it allows us to fit our reads into
+			// a 2P RAM every cycle.
 			buf[0][2] = image->pixels[x - 1][y].g;
 			buf[1][2] = image->pixels[x + 1][y].g;
 
-			// Compute the matrix product.
+			// Compute the convolution.
 			int16_t d0 = buf[1][0] - buf[0][0];
 			int16_t d1 = buf[1][1] - buf[0][1];
 			int16_t d2 = buf[1][2] - buf[0][2];
