@@ -44,6 +44,8 @@ struct depth_image_t stereobm_correspondence(struct g_image_t *left_image, struc
 	for(uint8_t d = MIN_DISPARITY; d < MAX_DISPARITY; d++) {
 		for(uint16_t y = 0; y < IMG_HEIGHT; y++) {
 			for(uint16_t x = MAX_DISPARITY; x < IMG_WIDTH; x++) {
+#pragma HLS PIPELINE
+
 				// int32_t score = x == MAX_DISPARITY ?
 				// 	stereobm_sad_score(left_image, right_image, x, y, d, score_buffer)
 				//	: stereobm_progressive_sad_score(left_image, right_image, x, y, d, score_buffer, prev_score);
