@@ -1,5 +1,5 @@
 LIBS = -lnetpbm -lm
-CFLAGS = -std=c99 -Wall -O2 -Iinclude/ -I/usr/include/netpbm
+CFLAGS = -std=c99 -Wall -Wno-unknown-pragmas -O2 -Iinclude/ -I/usr/include/netpbm
 
 compile_stereobm_core_tb:
 	gcc src/*.c test/stereobm_core_tb.c -o stereobm_core_tb $(CFLAGS) $(LIBS)
