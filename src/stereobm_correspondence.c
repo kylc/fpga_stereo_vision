@@ -28,12 +28,14 @@ struct depth_image_t stereobm_correspondence(struct g_image_t *left_image, struc
 	// declared outside the loop as we are processing every pixel of the
 	// image, then moving over to the next disparity.
 	int32_t min_scores[IMG_WIDTH][IMG_HEIGHT];
+	int32_t sec_min_scores[IMG_WIDTH][IMG_HEIGHT];
 
 	// Initialize the 'min_scores' array to very high values, so we can
 	// easily overwrite them with better scores.
 	for(uint16_t x = 0; x < IMG_WIDTH; x++) {
 		for(uint16_t y = 0; y < IMG_HEIGHT; y++) {
 			min_scores[x][y] = INT32_MAX;
+			sec_min_scores[x][y] = INT32_MAX;
 		}
 	}
 
@@ -59,6 +61,7 @@ struct depth_image_t stereobm_correspondence(struct g_image_t *left_image, struc
 				// If this score value is better than the
 				// current best, record it.
 				if(score < min_scores[x][y]) {
+					sec_min_scores[x][y] = min_scores[x][y];
 					min_scores[x][y] = score;
 
 					// Save the result to the output.
@@ -66,6 +69,22 @@ struct depth_image_t stereobm_correspondence(struct g_image_t *left_image, struc
 				}
 
 				prev_score = score;
+			}
+
+		}
+	}
+
+	// Uniqueness ratio post-processing.  If the best SAD value is not a
+	// certain ratio less than every other SAD value, then we discard the
+	// value.
+	for(uint16_t y = 0; y < IMG_HEIGHT; y++) {
+		for(uint16_t x = MAX_DISPARITY; x < IMG_WIDTH; x++) {
+			int thresh = min_scores[x][y] + (min_scores[x][y] * UNIQ_RATIO / 100);
+
+			// TODO: Only do the following if this SAD value is at
+			// least three disparities away, in either direction.
+			if(sec_min_scores[x][y] <= thresh) {
+				depth_map.pixels[x][y].d = 0;
 			}
 		}
 	}

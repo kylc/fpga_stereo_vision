@@ -21,4 +21,6 @@
 #define MIN_DISPARITY 0
 #define MAX_DISPARITY 64
 
+#define UNIQ_RATIO 15
+
 #endif
