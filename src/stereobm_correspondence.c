@@ -12,7 +12,7 @@ struct depth_image_t stereobm_correspondence(struct g_image_t *left_image, struc
 
 	// Initialize the map to all black (unknown) pixels.
 	// TODO: HLS does not support memset.
-	// memset(depth_map.pixels, 0, sizeof(depth_map.pixels));
+	memset(depth_map.pixels, 0, sizeof(depth_map.pixels));
 	
 	// The score buffer slides across the image from left to right and
 	// stores the column scores.  It is used to calculate a sliding SAD
@@ -48,15 +48,15 @@ struct depth_image_t stereobm_correspondence(struct g_image_t *left_image, struc
 			for(uint16_t x = MAX_DISPARITY; x < IMG_WIDTH; x++) {
 #pragma HLS PIPELINE
 
-				// int32_t score = x == MAX_DISPARITY ?
-				// 	stereobm_sad_score(left_image, right_image, x, y, d, score_buffer)
-				//	: stereobm_progressive_sad_score(left_image, right_image, x, y, d, score_buffer, prev_score);
+				 int32_t score = x == MAX_DISPARITY ?
+					 stereobm_sad_score(left_image, right_image, x, y, d, score_buffer)
+					 : stereobm_progressive_sad_score(left_image, right_image, x, y, d, score_buffer, prev_score);
 
 				// TODO: For now, forget about filling the
 				// initial buffer.  This messes with the left
 				// 'SAD_WINDOW_SIZE' columns, but makes
 				// optimization much easier.
-				int32_t score = stereobm_progressive_sad_score(left_image, right_image, x, y, d, score_buffer, prev_score);
+				// int32_t score = stereobm_progressive_sad_score(left_image, right_image, x, y, d, score_buffer, prev_score);
 
 				// If this score value is better than the
 				// current best, record it.
