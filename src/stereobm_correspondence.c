@@ -10,10 +10,6 @@
 struct depth_image_t stereobm_correspondence(struct g_image_t *left_image, struct g_image_t *right_image) {
 	struct depth_image_t depth_map;
 
-	// Initialize the map to all black (unknown) pixels.
-	// TODO: HLS does not support memset.
-	memset(depth_map.pixels, 0, sizeof(depth_map.pixels));
-	
 	// The score buffer slides across the image from left to right and
 	// stores the column scores.  It is used to calculate a sliding SAD
 	// score, so the entire SAD window does not need to be recomputed for
@@ -30,10 +26,12 @@ struct depth_image_t stereobm_correspondence(struct g_image_t *left_image, struc
 	int32_t min_scores[IMG_WIDTH][IMG_HEIGHT];
 	int32_t sec_min_scores[IMG_WIDTH][IMG_HEIGHT];
 
+	// Initialize the 'depth_map' to all black pixels.
 	// Initialize the 'min_scores' array to very high values, so we can
 	// easily overwrite them with better scores.
 	for(uint16_t x = 0; x < IMG_WIDTH; x++) {
 		for(uint16_t y = 0; y < IMG_HEIGHT; y++) {
+			depth_map.pixels[x][y].d = 0;
 			min_scores[x][y] = INT32_MAX;
 			sec_min_scores[x][y] = INT32_MAX;
 		}
