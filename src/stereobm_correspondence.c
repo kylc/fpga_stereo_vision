@@ -24,7 +24,6 @@ struct depth_image_t stereobm_correspondence(struct g_image_t *left_image, struc
 	// declared outside the loop as we are processing every pixel of the
 	// image, then moving over to the next disparity.
 	int32_t min_scores[IMG_WIDTH][IMG_HEIGHT];
-	int32_t sec_min_scores[IMG_WIDTH][IMG_HEIGHT];
 
 	// Initialize the 'depth_map' to all black pixels.
 	// Initialize the 'min_scores' array to very high values, so we can
@@ -33,7 +32,6 @@ struct depth_image_t stereobm_correspondence(struct g_image_t *left_image, struc
 		for(uint16_t y = 0; y < IMG_HEIGHT; y++) {
 			depth_map.pixels[x][y].d = 0;
 			min_scores[x][y] = INT32_MAX;
-			sec_min_scores[x][y] = INT32_MAX;
 		}
 	}
 
@@ -59,12 +57,22 @@ struct depth_image_t stereobm_correspondence(struct g_image_t *left_image, struc
 				// If this score value is better than the
 				// current best, record it.
 				if(score < min_scores[x][y]) {
-					sec_min_scores[x][y] = min_scores[x][y];
-					min_scores[x][y] = score;
+					// Uniqueness ratio post-processing.  If
+					// the best SAD value is not a certain
+					// ratio less than every other SAD
+					// value, then we discard the value.
+					// Otherwise, assign the new depth
+					// value.
+					int thresh = score + (score * UNIQ_RATIO / 100);
+					if(min_scores[x][y] <= thresh) {
+						depth_map.pixels[x][y].d = 0;
+					} else {
+						depth_map.pixels[x][y].d = d;
+					}
 
-					// Save the result to the output.
-					depth_map.pixels[x][y].d = d;
+					min_scores[x][y] = score;
 				}
+
 
 				prev_score = score;
 			}
@@ -72,20 +80,6 @@ struct depth_image_t stereobm_correspondence(struct g_image_t *left_image, struc
 		}
 	}
 
-	// Uniqueness ratio post-processing.  If the best SAD value is not a
-	// certain ratio less than every other SAD value, then we discard the
-	// value.
-	for(uint16_t y = 0; y < IMG_HEIGHT; y++) {
-		for(uint16_t x = MAX_DISPARITY; x < IMG_WIDTH; x++) {
-			int thresh = min_scores[x][y] + (min_scores[x][y] * UNIQ_RATIO / 100);
-
-			// TODO: Only do the following if this SAD value is at
-			// least three disparities away, in either direction.
-			if(sec_min_scores[x][y] <= thresh) {
-				depth_map.pixels[x][y].d = 0;
-			}
-		}
-	}
 
 	return depth_map;
 }
