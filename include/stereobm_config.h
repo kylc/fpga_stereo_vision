@@ -21,6 +21,8 @@
 #define MIN_DISPARITY 0
 #define MAX_DISPARITY 64
 
+/* The percentage by which the best SAD value must beat every other SAD value
+ * for a given pixel location */
 #define UNIQ_RATIO 15
 
 #endif
