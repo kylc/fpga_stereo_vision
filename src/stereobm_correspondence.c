@@ -91,10 +91,10 @@ struct depth_image_t stereobm_correspondence(struct g_image_t *left_image, struc
 int32_t stereobm_sad_score(struct g_image_t *left_image, struct g_image_t *right_image, uint16_t x, uint16_t y, uint8_t d, int32_t score_buffer[SAD_WINDOW_SIZE]) {
 	int32_t score = 0;
 
-	for(int dx = -SAD_WINDOW_SIZE2; dx < SAD_WINDOW_SIZE2; dx++) {
+	for(int dx = -SAD_WINDOW_SIZE2; dx <= SAD_WINDOW_SIZE2; dx++) {
 		int32_t col_score = 0;
 
-		for(int dy = -SAD_WINDOW_SIZE2; dy < SAD_WINDOW_SIZE2; dy++) {
+		for(int dy = -SAD_WINDOW_SIZE2; dy <= SAD_WINDOW_SIZE2; dy++) {
 			// Compute the disparity of a single pixel
 			uint8_t disparity = abs(left_image->pixels[x + dx][y + dy].g
 							- right_image->pixels[x + dx - d][y + dy].g);
@@ -121,14 +121,14 @@ int32_t stereobm_progressive_sad_score(struct g_image_t *left_image, struct g_im
 
 	// Shift the buffer to the left, making room for a new column on the
 	// right.
-	for(int i = 0; i < SAD_WINDOW_SIZE - 1; i++) {
+	for(int i = 0; i < SAD_WINDOW_SIZE; i++) {
 #pragma HLS UNROLL
 		score_buffer[i] = score_buffer[i + 1];
 	}
 
 	// Calculate the new column's score.
 	score_buffer[SAD_WINDOW_SIZE - 1] = 0;
-	for(int dy = -SAD_WINDOW_SIZE2; dy < SAD_WINDOW_SIZE2; dy++) {
+	for(int dy = -SAD_WINDOW_SIZE2; dy <= SAD_WINDOW_SIZE2; dy++) {
 		uint8_t disparity = abs(left_image->pixels[x + SAD_WINDOW_SIZE2][y + dy].g
 				- right_image->pixels[x + SAD_WINDOW_SIZE2 - d][y + dy].g);
 
