@@ -9,3 +9,16 @@ Installation
 ------------
 
     $ git clone git://github.com/kylc/fpga_stereo_vision
+
+Examples
+--------
+
+Core test:
+
+    $ make compile_stereobm_core_tb
+    $ ./stereobm_core_tb
+
+Prefilter test:
+
+    $ make compile_stereobm_prefilter_tb
+    $ ./stereobm_prefilter_tb
